@@ -10,8 +10,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="24dp"
+        android:padding="2dp"
         android:text="@string/warning_text"/>
+    <TextView
+        android:id="@+id/cheat_times_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:text="Remaining Cheating Times: "/>
     <TextView
         android:id="@+id/answer_text_view"
         android:layout_width="wrap_content"

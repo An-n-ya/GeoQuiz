@@ -20,6 +20,7 @@ private const val TAG = "MainActivity"
 private const val KEY_INDEX = "index"
 private const val KEY_SCORE = "score"
 private const val KEY_CHEATER = "cheater"
+private const val KEY_CHEAT_TIMES = "cheat_times"
 private const val REQUEST_CODE_CHEAT = 0
 
 class MainActivity : AppCompatActivity() {
@@ -44,10 +45,12 @@ class MainActivity : AppCompatActivity() {
 
         val currentIndex = savedInstanceState?.getInt(KEY_INDEX, 0) ?: 0
         val score = savedInstanceState?.getInt(KEY_SCORE, 0) ?: 0
+        val cheat_times = savedInstanceState?.getInt(KEY_CHEAT_TIMES, 0) ?: 0
         val is_cheater = savedInstanceState?.getBoolean(KEY_CHEATER, false) ?: false
         quizViewModel.currentIndex = currentIndex
         quizViewModel.score = score
         quizViewModel.isCheater = is_cheater
+        quizViewModel.cheatTimes = cheat_times
         val question_id_arr = savedInstanceState?.getIntegerArrayList(KEY_INDEX) ?: ArrayList<Int>()
         question_id_arr.forEach { id ->
             quizViewModel.set.add(id)
@@ -76,7 +79,8 @@ class MainActivity : AppCompatActivity() {
         }
         cheatButton.setOnClickListener{view: View ->
             val answerIsTrue = quizViewModel.currentQuestionAnswer
-            val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
+            val cheatTimes = quizViewModel.cheatTimes
+            val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue, cheatTimes)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 val options =
                     ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.width, view.height)
@@ -99,6 +103,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
         if (requestCode == REQUEST_CODE_CHEAT) {
+            quizViewModel.cheatTimes += 1
             quizViewModel.isCheater = data?.getBooleanExtra(EXTRA_ANSWER_SHOW,false)  ?: false;
         }
     }
@@ -109,6 +114,7 @@ class MainActivity : AppCompatActivity() {
         savedInstanceState.putInt(KEY_INDEX, quizViewModel.currentIndex)
         savedInstanceState.putInt(KEY_SCORE, quizViewModel.score)
         savedInstanceState.putBoolean(KEY_CHEATER, quizViewModel.isCheater)
+        savedInstanceState.putInt(KEY_CHEAT_TIMES, quizViewModel.cheatTimes)
         // DONE: how to persist hash set?
         var question_id_arr = ArrayList<Int>(quizViewModel.set)
         savedInstanceState.putIntegerArrayList(KEY_INDEX, question_id_arr)
